@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To江海镜</title>
+    <style>
+        /* 基础样式重置与全局配置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: #FFD9DD; /* 主背景色 */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: #333;
+        }
+
+        /* 背景装饰元素 */
+        .bg-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .decoration-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .circle-1 { width: 300px; height: 300px; top: -100px; right: -100px; }
+        .circle-2 { width: 200px; height: 200px; bottom: -50px; left: -50px; }
+        .circle-3 { width: 150px; height: 150px; top: 50%; left: 10%; }
+
+        /* 首页样式 */
+        #home-page {
+            text-align: center;
+            padding: 50px 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            max-width: 90%;
+            width: 600px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #4FC9E8; /* 标题色 */
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(79, 201, 232, 0.2);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #FFB8C7; /* 副标题色 */
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        #enter-btn {
+            background: #4FC9E8; /* 按钮主色 */
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(79, 201, 232, 0.3);
+            font-weight: 500;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #enter-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(79, 201, 232, 0.4);
+            background: #3FB2D8; /* 按钮悬停色 */
+        }
+
+        #enter-btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+
+        #enter-btn:hover:after { animation: shine 1.5s ease; }
+
+        /* 动画定义 */
+        @keyframes shine { 100% { transform: translateX(100%); } }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes popOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* 弹窗页面样式 */
+        #message-page {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: #FFD9DD;
+        }
+
+        /* Windows风格弹窗 */
+        .message {
+            position: absolute;
+            width: 280px; /* 弹窗宽度缩小 */
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            z-index: 100;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 弹窗标题栏 */
+        .message-header {
+            color: white;
+            padding: 6px 10px; /* 标题栏内边距减少 */
+            font-size: 12px; /* 标题字体缩小 */
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .close-btn {
+            background: white;
+            color: #333;
+            border: 1px solid #7a7a7a;
+            width: 20px; /* 关闭按钮缩小 */
+            height: 20px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e81123;
+            color: white;
+            border-color: #e81123;
+        }
+
+        .message-content {
+            padding: 12px; /* 内容区域内边距减少 */
+            color: #333;
+            font-size: 14px; /* 内容字体缩小 */
+            line-height: 1.4; /* 行高调整 */
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* 弹窗颜色变体 */
+        .message.variant-1 .message-header { background: #4FC9E8; }
+        .message.variant-2 .message-header { background: #FFB8C7; }
+        .message.variant-3 .message-header { background: #FFD9DD; }
+        .message.variant-4 .message-header { background: #FFB8C7; }
+        .message.variant-5 .message-header { background: #4FC9E8; }
+
+        /* 返回按钮 */
+        #back-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4FC9E8;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        #back-btn:hover {
+            background: #3FB2D8; /* 返回按钮悬停色 */
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration">
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        <div class="decoration-circle circle-3"></div>
+    </div>
+
+    <!-- 首页 -->
+    <div id="home-page">
+        <h1>凛冬将至</h1>
+        <div class="subtitle">
+            但友谊如暖阳，能融化冰雪，温暖心房<br>
+            愿这些话语能带给你一丝温暖与慰藉
+        </div>
+        <button id="enter-btn">点击这里</button>
+    </div>
+
+    <!-- 弹窗页面 -->
+    <div id="message-page">
+        <button id="back-btn">返回首页</button>
+    </div>
+
+    <script>
+        // 1. 数据定义：温馨话语数组
+        const warmMessages = [
+            "古巷透迤，你我长青",
+            "无所谓我们会一起骂遍全世界",
+            "途有好伴，不觉长远",
+            "一个人的生命，我以为是一半活在朋友中的",
+            "知交零落，实在是人生常态，能够偶尔话起，而心中仍然温柔，就是好朋友",
+            "友谊是两颗心的真诚相待，对另一颗心的敲打",
+            "后来才知道，好朋友不是通过努力争取来的，而是在各自的道路上奔跑时遇见的",
+            "约着见一面，便能使见面的前后几天都沾着光，变成好日子",
+            "真正的朋友，是一个灵魂，孕育在两个躯体里",
+            "我们的友谊是未完待续",
+            "你的出现弥补了四叶草不是随处出现",
+            "时光荏苒，友谊如酒，越久越醇",
+            "你是我漫长岁月里最温柔的遇见",
+            "即使相隔万里，心与心之间没有距离",
+            "真正的友谊是灵魂的相互滋养",
+            "与你同行，平凡的日子也熠熠生辉",
+            "在彼此的生命中留下温暖的印记",
+            "朋友是生命中最美的风景线",
+            "我们的故事，值得用一生去书写",
+            "即使沉默不语，也能感受到彼此的温暖",
+            "你是我疲惫生活中的希望与糖"
+        ];
+
+        // 2. DOM元素获取
+        const homePage = document.getElementById('home-page');
+        const messagePage = document.getElementById('message-page');
+        const enterBtn = document.getElementById('enter-btn');
+        const backBtn = document.getElementById('back-btn');
+
+        // 3. 事件绑定
+        enterBtn.addEventListener('click', () => {
+            homePage.style.display = 'none';
+            messagePage.style.display = 'block';
+            startGenerateMessages(); // 进入后开始生成弹窗
+        });
+
+        backBtn.addEventListener('click', () => {
+            messagePage.style.display = 'none';
+            homePage.style.display = 'block';
+            clearAllMessages(); // 返回时清除所有弹窗
+        });
+
+        // 4. 核心功能函数
+        /**
+         * 创建单个弹窗
+         */
+        function createSingleMessage() {
+            // 创建弹窗容器
+            const messageBox = document.createElement('div');
+            messageBox.className = 'message';
+            
+            // 随机添加颜色变体（1-5）
+            const randomVariant = Math.floor(Math.random() * 5) + 1;
+            messageBox.classList.add(`variant-${randomVariant}`);
+            
+            // 随机定位（避免超出屏幕）
+            const maxLeft = window.innerWidth - 280; // 弹窗宽度调整
+            const maxTop = window.innerHeight - 120; // 弹窗高度调整
+            messageBox.style.left = `${Math.random() * maxLeft}px`;
+            messageBox.style.top = `${Math.random() * maxTop}px`;
+            
+            // 随机选择一条温馨话语
+            const randomMsgIndex = Math.floor(Math.random() * warmMessages.length);
+            messageBox.innerHTML = `
+                <div class="message-header">
+                    <span>月食想对江海镜说：</span>
+                    <div class="close-btn">×</div>
+                </div>
+                <div class="message-content">${warmMessages[randomMsgIndex]}</div>
+            `;
+            
+            // 绑定弹窗关闭事件
+            const closeBtn = messageBox.querySelector('.close-btn');
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                messageBox.style.animation = 'popOut 0.3s forwards';
+                setTimeout(() => messageBox.remove(), 300); // 动画结束后删除
+            });
+            
+            messagePage.appendChild(messageBox);
+        }
+
+        /**
+         * 批量生成弹窗（每秒4个）
+         */
+        function startGenerateMessages() {
+            setInterval(createSingleMessage, 120);
+        }
+
+        /**
+         * 清除所有弹窗
+         */
+        function clearAllMessages() {
+            const allMessageBoxes = document.querySelectorAll('.message');
+            allMessageBoxes.forEach(box => box.remove());
+        }
+    </script>
+</body>
+</html>
